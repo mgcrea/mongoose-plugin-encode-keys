@@ -4,7 +4,7 @@ export default function encodeKeysPlugin(schema, {fields = []}) {
   schema.pre('save', function preSave(next) {
     const save = this;
     fields.forEach(field => {
-      if (save[field]) {
+      if (save && save[field]) {
         save[field] = encodeKeys(save[field]);
       }
     });
@@ -26,13 +26,20 @@ export default function encodeKeysPlugin(schema, {fields = []}) {
   schema.post('find', docs => {
     docs.forEach(doc => {
       fields.forEach(field => {
-        doc[field] = decodeKeys(doc[field]);
+        if (doc && doc[field]) {
+          doc[field] = decodeKeys(doc[field]);
+        }
       });
     });
   });
   schema.post('findOne', doc => {
+    if (!doc) {
+      return;
+    }
     fields.forEach(field => {
-      doc[field] = decodeKeys(doc[field]);
+      if (doc[field]) {
+        doc[field] = decodeKeys(doc[field]);
+      }
     });
   });
 }
