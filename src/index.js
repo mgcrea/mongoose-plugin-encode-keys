@@ -3,45 +3,41 @@ import {each} from 'lodash';
 export default function encodeKeysPlugin(schema, {fields = []}) {
   schema.pre('save', function preSave(next) {
     const save = this;
-    fields.forEach(field => {
-      if (save && save[field]) {
-        save[field] = encodeKeys(save[field]);
-      }
-    });
-    next();
+    encodeFields(save, next);
   });
   schema.pre('update', function preUpdate(next) {
     const update = this.getUpdate().$set;
-    if (!update) {
+    encodeFields(update, next);
+  });
+  schema.post('find', docs => {
+    docs.forEach(decodeFields);
+  });
+  schema.post('findOne', decodeFields);
+  schema.post('save', decodeFields);
+
+  function encodeFields(doc, next) {
+    if (!doc) {
       next();
       return;
     }
     fields.forEach(field => {
-      if (update[field]) {
-        update[field] = encodeKeys(update[field]);
+      if (doc[field]) {
+        doc[field] = encodeKeys(doc[field]); // eslint-disable-line no-param-reassign
       }
     });
     next();
-  });
-  schema.post('find', docs => {
-    docs.forEach(doc => {
-      fields.forEach(field => {
-        if (doc && doc[field]) {
-          doc[field] = decodeKeys(doc[field]);
-        }
-      });
-    });
-  });
-  schema.post('findOne', doc => {
+  }
+
+  function decodeFields(doc) {
     if (!doc) {
       return;
     }
     fields.forEach(field => {
       if (doc[field]) {
-        doc[field] = decodeKeys(doc[field]);
+        doc[field] = decodeKeys(doc[field]); // eslint-disable-line no-param-reassign
       }
     });
-  });
+  }
 }
 
 export function encodeKey(key) {
@@ -49,7 +45,7 @@ export function encodeKey(key) {
 }
 
 export function decodeKey(key) {
-  return typeof key === 'string' ? key.replace(/\\u002e/g, '.').replace(/\\u0024/g, '\$').replace(/\\\\/g, '\\') : key;
+  return typeof key === 'string' ? key.replace(/\\u002e/g, '.').replace(/\\u0024/g, '$').replace(/\\\\/g, '\\') : key;
 }
 
 export function encodeKeys(object) {
