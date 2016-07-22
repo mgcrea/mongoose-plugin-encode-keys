@@ -2,12 +2,14 @@
 import expect from 'expect';
 import mongoose from 'mongoose';
 import {map} from 'lodash';
+
 import testSchema from './../fixtures/schema';
+import pkg from './../../package.json';
 
 import encodeKeysPlugin from './../../src';
 
 describe('Plugin', () => {
-  const mongoUri = process.env.MONGODB_URI || `mongodb://127.0.0.1:27017/test-${process.env.NODE_ENV}`;
+  const mongoUri = process.env.MONGODB_URI || `mongodb://127.0.0.1:27017/test-${pkg.name}`;
   mongoose.set('debug', true);
   const db = mongoose.createConnection(mongoUri);
   const Model = db.model('Foo', testSchema);
