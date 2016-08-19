@@ -20,23 +20,21 @@ describe('Plugin', () => {
   it('constructor should export a function', () => {
     expect(encodeKeysPlugin).toBeA('function');
   });
-  it('should properly save one document', done => {
+  it('should properly save one document', () => {
     const orig = {name: 'TestSave', content: {$: 'test$', '.foo': 'test.', '\\bar': 'test\\'}};
-    Model.create(orig)
+    return Model.create(orig)
       .then(doc => {
         expect(doc.content).toEqual(orig.content);
         return Model.findOne({_id: doc.id});
       })
       .then(doc => {
         expect(doc.content).toEqual(orig.content);
-      })
-      .then(done)
-      .catch(done);
+      });
   });
-  it('should properly save several documents', done => {
+  it('should properly save several documents', () => {
     const origA = {name: 'TestSaveA', content: {$: 'test$', '.foo': 'test.', '\\bar': 'test\\'}};
     const origB = {name: 'TestSaveB', content: {$: 'test$', '.foo': 'test.', '\\bar': 'test\\'}};
-    Model.create([origA, origB])
+    return Model.create([origA, origB])
       .then(docs => {
         docs.forEach(doc => {
           expect(doc.content).toEqual(origA.content);
@@ -47,14 +45,12 @@ describe('Plugin', () => {
         docs.forEach(doc => {
           expect(doc.content).toEqual(origA.content);
         });
-      })
-      .then(done)
-      .catch(done);
+      });
   });
-  it('should properly update one document', done => {
+  it('should properly update one document', () => {
     const orig = {name: 'TestUpdate', content: {$: 'test$', '.foo': 'test.', '\\bar': 'test\\'}};
     const udpate = {content: {$: 'test2$'}};
-    Model.create(orig)
+    return Model.create(orig)
       .then(doc => {
         expect(doc.content).toEqual(orig.content);
         return Model.update({_id: doc.id}, udpate).then(() => doc);
@@ -62,18 +58,12 @@ describe('Plugin', () => {
       .then(doc => Model.findOne({_id: doc.id}))
       .then(doc => {
         expect(doc.content).toEqual(udpate.content);
-      })
-      .then(done)
-      .catch(done);
+      });
   });
-  it('should properly support find without results', done => (
+  it('should properly support find without results', () => (
     Model.findOne({name: 'foo'})
-      .then(done)
-      .catch(done)
   ));
-  it('should properly support update  results', done => (
+  it('should properly support update  results', () => (
     Model.update({name: 'foo'}, {})
-      .then(() => done())
-      .catch(done)
   ));
 });
