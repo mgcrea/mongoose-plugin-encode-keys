@@ -9,7 +9,7 @@ export default function encodeKeysPlugin(schema, {fields = []}) {
     const update = this.getUpdate().$set;
     encodeFields(update, next);
   });
-  schema.post('find', docs => {
+  schema.post('find', (docs) => {
     docs.forEach(decodeFields);
   });
   schema.post('findOne', decodeFields);
@@ -20,7 +20,7 @@ export default function encodeKeysPlugin(schema, {fields = []}) {
       next();
       return;
     }
-    fields.forEach(field => {
+    fields.forEach((field) => {
       if (doc[field]) {
         doc[field] = encodeKeys(doc[field]); // eslint-disable-line no-param-reassign
       }
@@ -32,7 +32,7 @@ export default function encodeKeysPlugin(schema, {fields = []}) {
     if (!doc) {
       return;
     }
-    fields.forEach(field => {
+    fields.forEach((field) => {
       if (doc[field]) {
         doc[field] = decodeKeys(doc[field]); // eslint-disable-line no-param-reassign
       }
