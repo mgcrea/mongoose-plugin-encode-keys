@@ -26,7 +26,7 @@
 	},
 	"license": "MIT",
 	"dependencies": {
-		"lodash": "^4.15.0"
+		"lodash": "^4.16.2"
 	},
 	"optionalDependencies": {},
 	"devDependencies": {
@@ -43,7 +43,7 @@
 		"eslint": "file:../../node_modules/eslint",
 		"mocha": "file:../../node_modules/mocha",
 		"nyc": "file:../../node_modules/nyc",
-		"mongoose": "^4.6.0",
+		"mongoose": "^4.6.1",
 		"rimraf": "file:../../node_modules/rimraf",
 		"supertest-as-promised": "file:../../node_modules/supertest-as-promised",
 		"supertest": "file:../../node_modules/supertest"
