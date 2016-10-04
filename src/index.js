@@ -1,6 +1,6 @@
 import {each} from 'lodash';
 
-export default function encodeKeysPlugin(schema, {fields = []}) {
+export default function encodeKeysPlugin(schema, {fields = []} = {}) {
   schema.pre('save', function preSave(next) {
     const save = this;
     encodeFields(save, next);
