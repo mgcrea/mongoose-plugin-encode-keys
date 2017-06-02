@@ -23,26 +23,37 @@ describe('Plugin', () => {
   it('should properly save one document', () => {
     const orig = {name: 'TestSave', content: {$: 'test$', '.foo': 'test.', '\\bar': 'test\\'}};
     return Model.create(orig)
-      .then(doc => {
+      .then((doc) => {
         expect(doc.content).toEqual(orig.content);
         return Model.findOne({_id: doc.id});
       })
-      .then(doc => {
+      .then((doc) => {
         expect(doc.content).toEqual(orig.content);
+      });
+  });
+  it('should properly save one document with nested schemas', () => {
+    const orig = {name: 'TestSave', sub: {bar: {$: 'test$', '.foo': 'test.', '\\bar': 'test\\'}}};
+    return Model.create(orig)
+      .then((doc) => {
+        expect(doc.sub.bar).toEqual(orig.sub.bar);
+        return Model.findOne({_id: doc.id});
+      })
+      .then((doc) => {
+        expect(doc.sub.bar).toEqual(orig.sub.bar);
       });
   });
   it('should properly save several documents', () => {
     const origA = {name: 'TestSaveA', content: {$: 'test$', '.foo': 'test.', '\\bar': 'test\\'}};
     const origB = {name: 'TestSaveB', content: {$: 'test$', '.foo': 'test.', '\\bar': 'test\\'}};
     return Model.create([origA, origB])
-      .then(docs => {
-        docs.forEach(doc => {
+      .then((docs) => {
+        docs.forEach((doc) => {
           expect(doc.content).toEqual(origA.content);
         });
         return Model.find({_id: {$in: map(docs, 'id')}});
       })
-      .then(docs => {
-        docs.forEach(doc => {
+      .then((docs) => {
+        docs.forEach((doc) => {
           expect(doc.content).toEqual(origA.content);
         });
       });
@@ -51,12 +62,12 @@ describe('Plugin', () => {
     const orig = {name: 'TestUpdate', content: {$: 'test$', '.foo': 'test.', '\\bar': 'test\\'}};
     const udpate = {content: {$: 'test2$'}};
     return Model.create(orig)
-      .then(doc => {
+      .then((doc) => {
         expect(doc.content).toEqual(orig.content);
         return Model.update({_id: doc.id}, udpate).then(() => doc);
       })
       .then(doc => Model.findOne({_id: doc.id}))
-      .then(doc => {
+      .then((doc) => {
         expect(doc.content).toEqual(udpate.content);
       });
   });
