@@ -14,7 +14,7 @@ describe('Plugin', () => {
   const db = mongoose.createConnection(mongoUri);
   const Model = db.model('Foo', testSchema);
 
-  before(() => Promise.all([
+  beforeAll(() => Promise.all([
     Model.remove({})
   ]));
   it('constructor should export a function', () => {

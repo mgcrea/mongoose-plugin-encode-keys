@@ -1,16 +1,4 @@
 {
-  "plugins": [
-    "transform-class-properties",
-    "transform-es2015-modules-commonjs",
-    "transform-object-rest-spread",
-    "transform-function-bind",
-    "dynamic-import-node",
-    ["relative-import", {"rootPathSuffix": "%/src"}]
-  ],
-  "env": {
-    "test": {
-      "sourceMaps": "inline",
-      "retainLines": true
-    }
-  }
+  "presets": ["es2015"],
+  "plugins": ["transform-class-properties", "transform-function-bind", "transform-object-rest-spread"]
 }
