@@ -5,7 +5,7 @@ node_js:
 
 env:
   global:
-    - CODACY_PROJECT_TOKEN=36330f847fae430991bc63d48e9a7df1
+    - CODACY_PROJECT_TOKEN=b9c29e4d51b24057ac470365bac63dfd
 
 services:
   - mongodb
