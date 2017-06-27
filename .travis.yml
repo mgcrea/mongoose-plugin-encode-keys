@@ -18,5 +18,5 @@ script:
   - npm run lint
   - npm run test:coverage
 
-# after_script:
-#   - cat coverage/lcov.info | codacy-coverage
+after_script:
+  - cat coverage/lcov.info | codacy-coverage

@@ -5,7 +5,7 @@
 [![build status](http://img.shields.io/travis/mgcrea/mongoose-plugin-encode-keys/master.svg?style=flat)](http://travis-ci.org/mgcrea/mongoose-plugin-encode-keys)
 [![dependencies status](https://img.shields.io/david/mgcrea/mongoose-plugin-encode-keys.svg?style=flat)](https://david-dm.org/mgcrea/mongoose-plugin-encode-keys)
 [![devDependencies status](https://img.shields.io/david/dev/mgcrea/mongoose-plugin-encode-keys.svg?style=flat)](https://david-dm.org/mgcrea/mongoose-plugin-encode-keys#info=devDependencies)
-[![Codacy Badge_Grade](https://api.codacy.com/project/badge/Grade/99844d4bed38450f9ec9e03650d19954)](https://www.codacy.com/app/olivier_5/mongoose-plugin-encode-keys?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mgcrea/mongoose-plugin-encode-keys&amp;utm_campaign=Badge_Grade) [![Codacy Badge_Coverage](https://api.codacy.com/project/badge/Coverage/99844d4bed38450f9ec9e03650d19954)](https://www.codacy.com/app/olivier_5/mongoose-plugin-encode-keys?utm_source=github.com&utm_medium=referral&utm_content=mgcrea/mongoose-plugin-encode-keys&utm_campaign=Badge_Coverage)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/36d1ac9977104416b71a0346be48230f)](https://www.codacy.com/app/olivier_5/mongoose-plugin-encode-keys?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mgcrea/mongoose-plugin-encode-keys&amp;utm_campaign=Badge_Grade)
 [![npm downloads](https://img.shields.io/npm/dm/mongoose-plugin-encode-keys.svg)](https://www.npmjs.com/package/mongoose-plugin-encode-keys)
 
 Add support for unsafe chars inside MongoDB field names (like `.` or keys starting with `$`)
@@ -16,7 +16,7 @@ Add support for unsafe chars inside MongoDB field names (like `.` or keys starti
 
 ```js
 import {Schema} from 'mongoose';
-import encodeKeysPlugin from './../../src';
+import encodeKeysPlugin from 'mongoose-plugin-encode-keys';
 
 const schema = new Schema({
   name: {type: String, required: true},
