@@ -18,10 +18,21 @@ describe('Plugin', () => {
     Model.remove({})
   ]));
   it('constructor should export a function', () => {
-    expect(encodeKeysPlugin).toBeA('function');
+    expect(typeof encodeKeysPlugin).toBe('function');
   });
   it('should properly save one document', () => {
     const orig = {name: 'TestSave', content: {$: 'test$', '.foo': 'test.', '\\bar': 'test\\'}};
+    return Model.create(orig)
+      .then((doc) => {
+        expect(doc.content).toEqual(orig.content);
+        return Model.findOne({_id: doc.id});
+      })
+      .then((doc) => {
+        expect(doc.content).toEqual(orig.content);
+      });
+  });
+  it('should properly save one document with nested invalid keys', () => {
+    const orig = {name: 'TestSave', content: {layouts: [{'foo.bar': 'baz'}]}};
     return Model.create(orig)
       .then((doc) => {
         expect(doc.content).toEqual(orig.content);

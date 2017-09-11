@@ -52,7 +52,7 @@ export function encodeKeys(object) {
   if (!object || typeof object !== 'object') return object;
   const res = Array.isArray(object) ? [] : {};
   each(object, (value, key) => {
-    res[encodeKey(key)] = isPlainObject(object[key]) ? encodeKeys(object[key]) : object[key];
+    res[encodeKey(key)] = (isPlainObject(object[key]) || Array.isArray(object[key])) ? encodeKeys(object[key]) : object[key];
   });
   return res;
 }
@@ -61,7 +61,7 @@ export function decodeKeys(object) {
   if (!object || typeof object !== 'object') return object;
   const res = Array.isArray(object) ? [] : {};
   each(object, (value, key) => {
-    res[decodeKey(key)] = isPlainObject(object[key]) ? decodeKeys(object[key]) : object[key];
+    res[decodeKey(key)] = (isPlainObject(object[key]) || Array.isArray(object[key])) ? decodeKeys(object[key]) : object[key];
   });
   return res;
 }
