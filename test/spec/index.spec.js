@@ -82,6 +82,19 @@ describe('Plugin', () => {
         expect(doc.content).toEqual(udpate.content);
       });
   });
+  it('should properly update one document with nested invalid keys', () => {
+    const orig = {name: 'TestSave', content: {layouts: [{'foo.bar': 'baz'}]}};
+    const udpate = {'content.layouts': [{'foo.bar': 'baz2'}]};
+    return Model.create(orig)
+      .then((doc) => {
+        expect(doc.content).toEqual(orig.content);
+        return Model.update({_id: doc.id}, udpate).then(() => doc);
+      })
+      .then(doc => Model.findOne({_id: doc.id}))
+      .then((doc) => {
+        expect(doc.content).toEqual({layouts: udpate['content.layouts']});
+      });
+  });
   it('should properly support find without results', () => (
     Model.findOne({name: 'foo'})
   ));

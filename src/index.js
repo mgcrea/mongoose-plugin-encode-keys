@@ -1,23 +1,11 @@
-import {each, isPlainObject} from 'lodash';
+import {includes, startsWith} from 'lodash';
+import {encodeKeys, decodeKeys, encodeKey, decodeKey} from './helpers';
 
 export default function encodeKeysPlugin(schema, {fields = []} = {}) {
-  schema.pre('save', function preSave(next) {
-    const save = this;
-    encodeFields(save, next);
-  });
-  schema.pre('update', function preUpdate(next) {
-    const update = this.getUpdate().$set;
-    encodeFields(update, next);
-  });
-  schema.post('find', (docs) => {
-    docs.forEach(decodeFields);
-  });
-  schema.post('findOne', decodeFields);
-  schema.post('save', decodeFields);
-
-  function encodeFields(doc, next) {
+  // Helpers
+  const isEncodedKey = key => fields.some(field => key === field || startsWith(key, `${field}.`));
+  const encodeFields = (doc) => {
     if (!doc) {
-      next();
       return;
     }
     fields.forEach((field) => {
@@ -25,10 +13,18 @@ export default function encodeKeysPlugin(schema, {fields = []} = {}) {
         doc[field] = encodeKeys(doc[field]); // eslint-disable-line no-param-reassign
       }
     });
-    next();
-  }
-
-  function decodeFields(doc) {
+  };
+  const encodeUpdateFields = (obj, excluded = []) => {
+    if (!obj) {
+      return;
+    }
+    Object.keys(obj).forEach((key) => {
+      if (!includes(excluded, key) && isEncodedKey(key)) {
+        obj[key] = encodeKeys(obj[key]); // eslint-disable-line no-param-reassign
+      }
+    });
+  };
+  const decodeFields = (doc) => {
     if (!doc) {
       return;
     }
@@ -37,31 +33,41 @@ export default function encodeKeysPlugin(schema, {fields = []} = {}) {
         doc[field] = decodeKeys(doc[field]); // eslint-disable-line no-param-reassign
       }
     });
+  };
+
+
+  // Encoding
+  function preSave(next) {
+    const save = this;
+    encodeFields(save);
+    next();
   }
-}
+  schema.pre('save', preSave);
 
-export function encodeKey(key) {
-  return typeof key === 'string' ? key.replace(/\\/g, '\\\\').replace(/\$/g, '\\u0024').replace(/\./g, '\\u002e') : key;
-}
+  function preUpdate(next) {
+    const update = this.getUpdate();
+    const usedOperators = [];
+    Object.keys(update).forEach((fieldOrOperator) => {
+      const isOperator = startsWith(fieldOrOperator, '$');
+      if (isOperator) {
+        // Encode all operators sub-objects
+        encodeUpdateFields(update[fieldOrOperator]);
+        usedOperators.push(fieldOrOperator);
+      }
+    });
+    // Encode remaining fields
+    encodeUpdateFields(update, usedOperators);
+    next();
+  }
+  schema.pre('update', preUpdate);
+  schema.pre('findOneAndUpdate', preUpdate);
 
-export function decodeKey(key) {
-  return typeof key === 'string' ? key.replace(/\\u002e/g, '.').replace(/\\u0024/g, '$').replace(/\\\\/g, '\\') : key;
-}
-
-export function encodeKeys(object) {
-  if (!object || typeof object !== 'object') return object;
-  const res = Array.isArray(object) ? [] : {};
-  each(object, (value, key) => {
-    res[encodeKey(key)] = (isPlainObject(object[key]) || Array.isArray(object[key])) ? encodeKeys(object[key]) : object[key];
+  // Decoding
+  schema.post('find', (docs) => {
+    docs.forEach(decodeFields);
   });
-  return res;
+  schema.post('findOne', decodeFields);
+  schema.post('save', decodeFields);
 }
 
-export function decodeKeys(object) {
-  if (!object || typeof object !== 'object') return object;
-  const res = Array.isArray(object) ? [] : {};
-  each(object, (value, key) => {
-    res[decodeKey(key)] = (isPlainObject(object[key]) || Array.isArray(object[key])) ? decodeKeys(object[key]) : object[key];
-  });
-  return res;
-}
+export {encodeKeys, decodeKeys, encodeKey, decodeKey};
