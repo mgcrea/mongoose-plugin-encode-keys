@@ -1,6 +1,6 @@
 {
   "name": "mongoose-plugin-encode-keys",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "prepublish": "npm run compile"
   },
   "engines": {
-    "node": "^6"
+    "node": ">=4"
   },
   "author": "Olivier Louvignes <olivier@mgcrea.io>",
   "repository": "github:mgcrea/mongoose-plugin-encode-keys",
